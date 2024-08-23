@@ -96,22 +96,15 @@ local lsp_client_name = function()
     end
     clients_name = table.concat(clients, ', ')
 
-    -- NOTE: Only show XX characters if the "clients_name" is too long
-    if name_max_length <= 0 then
-        return the_symbol .. clients_name
-    else
-        local clients_length = string.len(clients_name)
-        local clients_truncated_name = ""
-
-        if clients_length >= name_max_length then
-            clients_truncated_name = string.sub(clients_name, 1, name_max_length)
-            clients_truncated_name = #clients .. ":(" .. clients_truncated_name .. "...)"
-            return the_symbol .. clients_truncated_name
-        elseif clients_length == 0 then
-            return the_symbol .. #clients .. ":(" .. "LSP" .. ")"
-        else
-            return the_symbol .. #clients .. ":(" .. clients_name .. ")"
+    -- Only show XX characters if the "clients_name" is too long
+    if name_max_length > 0 then
+        local display_name = (clients_name == "") and "LSP" or clients_name
+        if string.len(display_name) > name_max_length then
+            display_name = string.sub(display_name, 1, name_max_length) .. "…"
         end
+        return the_symbol .. #clients .. ":(" .. display_name .. ")"
+    else
+        return the_symbol .. clients_name
     end
 end
 
